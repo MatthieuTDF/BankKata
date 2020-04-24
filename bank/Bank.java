@@ -6,10 +6,10 @@ import java.util.Arrays;
 
 public class Bank {
 
-    private static final String JDBC_DRIVER = "org.postgresql.Driver";
-    private static final String DB_URL = "jdbc:postgresql://localhost:5439/postgres";
-    private static final String DB_USER = "postgres";
-    private static final String DB_PASS = "1234";
+    private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
+    private static final String DB_URL = "jdbc:mysql://localhost:3308/mysql?useSSL=false&serverTimezone=UTC";
+    private static final String DB_USER = "root";
+    private static final String DB_PASS = "";
 
     private static final String TABLE_NAME = "accounts";
 
