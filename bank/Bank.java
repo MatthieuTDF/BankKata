@@ -3,6 +3,8 @@ package bank;
 
 import java.sql.*;
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Bank {
 
@@ -14,6 +16,8 @@ public class Bank {
     private static final String TABLE_NAME = "accounts";
 
     private Connection c;
+    private static Pattern pattern;
+    private static Matcher matcher;
 
     public Bank() {
         initDb();
@@ -54,15 +58,56 @@ public class Bank {
         }
     }
 
+    public boolean newAccountCheck(String accountData){
+        Pattern p = Pattern.compile("^([a-z]+):([1-9][0-9]*):(-[1-9][0-9]*|0)$", Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(accountData);
+        if(m.groupCount() == 3 && m.matches() ){
+            boolean exist = true;
+            String query = "select name from " + TABLE_NAME + " WHERE name='" + m.group(1)+"' ;";
+            try (PreparedStatement s = c.prepareStatement(query)) {
+                ResultSet r = s.executeQuery();
+                exist = r.next() ? true : false; //if account already exist returns true
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+            if (!exist) {
+                createNewAccount(m.group(1), Integer.parseInt(m.group(2)), Integer.parseInt(m.group(3)));
+                return true;
+            }else{System.out.println("Account already exists !");}
+
+        }else{System.out.println("Bad input !");}
+
+        return false;
+    }
 
     public void createNewAccount(String name, int balance, int threshold) {
         // TODO
+        try (Statement s = this.c.createStatement()){
+            s.executeUpdate("INSERT INTO " + TABLE_NAME +
+                                "(name, balance, overdraft, locked)" +
+                                "VALUES ('"+name+"','"+ balance +"','" +threshold+"', false)");
+            System.out.println("Account Created !");
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
     }
 
     public String printAllAccounts() {
         // TODO
+        String query = "select * from " + TABLE_NAME;
+        String res = "";
 
-        return "";
+        try (PreparedStatement s = c.prepareStatement(query)) {
+            ResultSet r = s.executeQuery();
+            // while there is a next row
+            while (r.next()){
+                res += r.getString(1)+ " | " + r.getInt(2) + " | " + r.getInt(3) + " | " + r.getBoolean(4) + "\n";
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        return res;
     }
 
     public void changeBalanceByName(String name, int balanceModifier) {
@@ -94,12 +139,11 @@ public class Bank {
 
         try (Statement s = this.c.createStatement()){
             s.executeUpdate("CREATE TABLE " + TABLE_NAME + "(\n" +
-                                    "id INT NOT NULL,\n" +
                                     "name VARCHAR(120) NOT NULL,\n" +
                                     "balance INT NOT NULL,\n" +
                                     "overdraft INT NOT NULL,\n" +
                                     "locked BOOLEAN NOT NULL,\n" +
-                                    "PRIMARY KEY (id))");
+                                    "PRIMARY KEY (name))");
             System.out.println("Table 'accounts' created successfully");
 
         } catch (Exception e) {
@@ -108,7 +152,7 @@ public class Bank {
     }
 
     // For testing purpose
-    String getTableDump() {
+    public String getTableDump() {
         String query = "select * from " + TABLE_NAME;
         String res = "";
 

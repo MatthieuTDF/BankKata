@@ -7,11 +7,16 @@ class Account {
     private String name;
     private int balance;
     private int overdraft;
+    private boolean locked;
     // TODO
 
     // Constructor
-    public Account(){
-        System.out.println("Account created");
+    public Account(int id, String name, int balance, int overdraft, boolean locked){
+        this.id = id;
+        this.name = name;
+        this.balance = balance;
+        this.overdraft = overdraft;
+        this.locked = locked;
     }
     // TODO
 

@@ -41,6 +41,15 @@ public class Main extends Application {
                     endOfSession = true;
                     b.closeDb();
                     break;
+                case "0":
+                    System.out.println(b.printAllAccounts());
+                    break;
+                case "1":
+                    System.out.println("\nEnter the accounts details or quit (ex: 'name:100:-100' ):");
+                    String account_data = s.nextLine();
+                    b.newAccountCheck(account_data);
+                    break;
+
                 // TODO
             }
         }
