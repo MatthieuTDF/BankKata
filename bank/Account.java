@@ -3,7 +3,6 @@ package bank;
 class Account {
 
     // Attributes
-    private int id;
     private String name;
     private int balance;
     private int overdraft;
@@ -11,8 +10,7 @@ class Account {
     // TODO
 
     // Constructor
-    public Account(int id, String name, int balance, int overdraft, boolean locked){
-        this.id = id;
+    public Account(String name, int balance, int overdraft, boolean locked){
         this.name = name;
         this.balance = balance;
         this.overdraft = overdraft;
@@ -21,10 +19,38 @@ class Account {
     // TODO
 
     // Methods
-    // TODO
+
+
+    public String getName() {
+        return name;
+    }
+
+    public int getBalance() {
+        return balance;
+    }
+
+    public void setBalance(int balance) {
+        this.balance = balance;
+    }
+
+    public int getOverdraft() {
+        return overdraft;
+    }
+
+    public void setOverdraft(int overdraft) {
+        this.overdraft = overdraft;
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
+    }
 
     public String toString() {
         // TODO
-        return "";
+        return this.name + " | " + this.balance + " | " + this.overdraft + " | " + this.locked + "\n";
     }
 }

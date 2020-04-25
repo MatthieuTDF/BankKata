@@ -30,6 +30,7 @@ public class Main extends Application {
             System.out.println("1. Create a new account");
             System.out.println("2. Change balance on a given account");
             System.out.println("3. Block an account");
+            System.out.println("4. UnBlock an account");
             System.out.println("q. Quit\n");
 
             // Getting primary input
@@ -48,6 +49,21 @@ public class Main extends Application {
                     System.out.println("\nEnter the accounts details or quit (ex: 'name:100:-100' ):");
                     String account_data = s.nextLine();
                     b.newAccountCheck(account_data);
+                    break;
+                case "2":
+                    System.out.println("\nEnter name and modifier (ex: 'name:-100' ):");
+                    String data = s.nextLine();
+                    b.changeBalanceCheck(data);
+                    break;
+                case "3":
+                    System.out.println("\nAccount to lock :");
+                    String unlockedName = s.nextLine();
+                    b.blockAccount(unlockedName);
+                    break;
+                case "4":
+                    System.out.println("\nAccount to unlock : ");
+                    String lockedName = s.nextLine();
+                    b.unblockAccount(lockedName);
                     break;
 
                 // TODO
