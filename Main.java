@@ -30,6 +30,7 @@ public class Main extends Application {
             System.out.println("1. Create a new account");
             System.out.println("2. Change balance on a given account");
             System.out.println("3. Block an account");
+            //System.out.println("4. Change threshold on a given account");
             System.out.println("q. Quit\n");
 
             // Getting primary input
@@ -42,6 +43,21 @@ public class Main extends Application {
                     b.closeDb();
                     break;
                 // TODO
+                case "0":
+                    System.out.println(b.printAllAccounts());
+                    break;
+                case "1":
+                    b.inputCreateNewAccount();
+                    break;
+                case "2":
+                    b.inputChangeBalance();
+                    break;
+                case "3":
+                    b.inputBlockAccount();
+                    break;
+                /*case "4":
+                    b.inputChangeThreshold();
+                    break;*/
             }
         }
 
