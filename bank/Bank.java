@@ -9,20 +9,20 @@ public class Bank {
     /*
         Strings de connection à la base postgres
      */
-    private static final String JDBC_DRIVER = "org.postgresql.Driver";
+    /*private static final String JDBC_DRIVER = "org.postgresql.Driver";
     private static final String DB_URL = "jdbc:postgresql://localhost:5439/postgres";
-    private static final String DB_USER = "postgres";
+    private static final String DB_USER = "postgres";*/
 
     /*
         Strings de connection à la base mysql, à décommenter et compléter avec votre nom de bdd et de user
      */
-    // private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
-    // private static final String DB_URL = "jdbc:mysql://localhost:3306/bank_db";
-    // private static final String DB_USER = "bank_user";
+     private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
+     private static final String DB_URL = "jdbc:mysql://localhost:3306/bank";
+     private static final String DB_USER = "root";
 
-    private static final String DB_PASS = "1234";
+    private static final String DB_PASS = "";
 
-    private static final String TABLE_NAME = "accounts";
+    private static final String TABLE_NAME = "account";
 
     private Connection c;
 
@@ -59,7 +59,7 @@ public class Bank {
             s.executeUpdate(
                        "DROP SCHEMA public CASCADE;" +
                             "CREATE SCHEMA public;" +
-                            "GRANT ALL ON SCHEMA public TO postgres;" +
+                            "GRANT ALL ON SCHEMA public TO mysql;" +
                             "GRANT ALL ON SCHEMA public TO public;");
         } catch (Exception e) {
             System.out.println(e.toString());
@@ -69,25 +69,64 @@ public class Bank {
 
     public void createNewAccount(String name, int balance, int threshold) {
         // TODO
+         Account newAccount = new Account(name, balance, threshold);
+
+         try(Statement statement = c.createStatement()){
+             if (threshold <= 0){
+                 statement.executeUpdate("INSERT INTO" + TABLE_NAME + " " +
+                         "(name, balance, threshold, status)"+ "VALUES" + "('"+ newAccount.get$name() + "', '"+ newAccount.get$amount() +"', '"+ newAccount.get$allowed() +"', '"+ newAccount.get$status() +"')");
+             }
+         }catch (Exception e){
+             System.out.println(e.toString());
+         }
+
     }
 
     public String printAllAccounts() {
         // TODO
+        return getTableDump();
 
-        return "";
     }
 
     public void changeBalanceByName(String name, int balanceModifier) {
         // TODO
+        try(Statement statement = c.createStatement()){
+
+            //my bad, i have changed balance with balanceModifier instead of adding
+             double balance = statement.executeUpdate("SELECT amount FROM" + TABLE_NAME + "WHERE name =" + name);
+
+
+        }catch (Exception e){
+            System.out.println(e.toString());
+        }
+
+        double newBalance = balance + balanceModifier;
+
+        try(Statement statement = c.createStatement()){
+
+                statement.executeUpdate("UPDATE" + TABLE_NAME + "SET" + "amount =" + newBalance + "WHERE name =" + name);
+
+        }catch (Exception e){
+            System.out.println(e.toString());
+        }
+
     }
 
     public void blockAccount(String name) {
         // TODO
+        try(Statement statement = c.createStatement()){
+
+            statement.executeUpdate("UPDATE" + TABLE_NAME + "SET" + "status =" + 0 + "WHERE name =" + name);
+
+        }catch (Exception e){
+            System.out.println(e.toString());
+        }
+
     }
 
     // For testing purpose
     String getTableDump() {
-        String query = "select * from " + TABLE_NAME;
+        String query = "select * from " + "account";
         String res = "";
 
         try (PreparedStatement s = c.prepareStatement(query)) {

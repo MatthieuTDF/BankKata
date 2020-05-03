@@ -42,6 +42,8 @@ public class Main extends Application {
                     b.closeDb();
                     break;
                 // TODO
+                default: System.out.println("sorry wrong value");
+                         break;
             }
         }
 
