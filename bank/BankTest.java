@@ -37,8 +37,32 @@ public class BankTest {
         // Check Account created
         assertEquals(
                 "TESTY | 100 | -100 | false\n" +
-                         "TESTYTEST | 200 | -300 | false\n",
+                        "TESTYTEST | 200 | -300 | false\n",
                 b.printAllAccounts());
+
+
+        // Check in DB
+        assertEquals(
+                "[TESTY, 100, -100, f]" +
+                        "[TESTYTEST, 200, -300, f]",
+                b.getTableDump());
+    }
+
+    @Test
+    public void illegalCreateAccount() {
+
+        b.createNewAccount("TESTY", 100, 100);
+
+        // Check Account created
+        assertEquals(
+                "",
+                b.printAllAccounts());
+
+
+        // Check in DB
+        assertEquals(
+                "",
+                b.getTableDump());
     }
 
     @Test
@@ -52,6 +76,11 @@ public class BankTest {
                 "TESTY | 200 | -100 | false\n",
                 b.printAllAccounts());
 
+
+        // Check in DB
+        assertEquals(
+                "[TESTY, 200, -100, f]",
+                b.getTableDump());
     }
 
     @Test
@@ -65,6 +94,11 @@ public class BankTest {
                 "TESTY | 90 | -100 | false\n",
                 b.printAllAccounts());
 
+
+        // Check in DB
+        assertEquals(
+                "[TESTY, 90, -100, f]",
+                b.getTableDump());
     }
 
     @Test
@@ -77,6 +111,11 @@ public class BankTest {
         assertEquals(
                 "TESTY | 100 | -100 | true\n",
                 b.printAllAccounts());
+
+        // Check in DB
+        assertEquals(
+                "[TESTY, 100, -100, t]",
+                b.getTableDump());
     }
 
     @Test
@@ -92,6 +131,11 @@ public class BankTest {
                 "TESTY | 100 | -100 | true\n",
                 b.printAllAccounts());
 
+
+        // Check in DB
+        assertEquals(
+                "[TESTY, 100, -100, t]",
+                b.getTableDump());
     }
 
     @Test
@@ -104,5 +148,36 @@ public class BankTest {
         assertEquals(
                 "TESTY | 100 | -100 | false\n",
                 b.printAllAccounts());
+
+
+        // Check in DB
+        assertEquals(
+                "[TESTY, 100, -100, f]",
+                b.getTableDump());
+    }
+
+    @Test
+    public void bigFunctionalTest() {
+        b.createNewAccount("TESTY", 100, -100);
+        b.createNewAccount("TESTO", 300, -200);
+        b.createNewAccount("TESTU", 150, 15);
+
+        b.changeBalanceByName("TESTY", -10);
+        b.blockAccount("TESTY");
+        b.changeBalanceByName("TESTY", -100);
+        b.changeBalanceByName("TESTO", 20);
+
+        // Check new balance
+        assertEquals(
+                "TESTY | 90 | -100 | true\n" +
+                        "TESTO | 320 | -200 | false\n",
+                b.printAllAccounts());
+
+
+        // Check in DB
+        assertEquals(
+                "[TESTY, 90, -100, t]" +
+                        "[TESTO, 320, -200, f]",
+                b.getTableDump());
     }
 }

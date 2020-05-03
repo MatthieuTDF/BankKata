@@ -41,7 +41,25 @@ public class Main extends Application {
                     endOfSession = true;
                     b.closeDb();
                     break;
-                // TODO
+
+                case "0":
+                    System.out.println(b.printAllAccounts());
+                    break;
+
+                case "1":
+                    b.inputCreateNewAccount();
+                    break;
+
+                case "2":
+                    b.inputChangeBalanceByName();
+                    break;
+
+                case "3":
+                    System.out.println("Enter the name of the account you want to block.");
+                    String blockedAccount = s.nextLine();
+                    b.inputBlockAccount(blockedAccount);
+                    break;
+
             }
         }
 
