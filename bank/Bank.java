@@ -6,21 +6,11 @@ import java.util.Arrays;
 
 public class Bank {
 
-    /*
-        Strings de connection à la base postgres
-     */
-    private static final String JDBC_DRIVER = "org.postgresql.Driver";
-    private static final String DB_URL = "jdbc:postgresql://localhost:5439/postgres";
-    private static final String DB_USER = "postgres";
 
-    /*
-        Strings de connection à la base mysql, à décommenter et compléter avec votre nom de bdd et de user
-     */
-    // private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
-    // private static final String DB_URL = "jdbc:mysql://localhost:3306/bank_db";
-    // private static final String DB_USER = "bank_user";
-
-    private static final String DB_PASS = "1234";
+    private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
+    private static final String DB_URL = "jdbc:mysql://localhost:3308/bank";
+    private static final String DB_USER = "root";
+    private static final String DB_PASS = "";
 
     private static final String TABLE_NAME = "accounts";
 
