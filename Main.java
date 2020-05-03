@@ -1,6 +1,7 @@
 import bank.Bank;
 
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class Main extends Application {
 
@@ -42,6 +43,68 @@ public class Main extends Application {
                     b.closeDb();
                     break;
                 // TODO
+
+                case "0":
+                    System.out.println(b.printAllAccounts());
+                    break;
+
+                case "1":
+
+                    System.out.println("Entrez le nom du compte à créer : ");
+                    String name_input = s.nextLine();
+
+                    System.out.println("Entrez le solde du compte");
+                    String balance_input = s.nextLine();
+
+                    while(Pattern.matches("\\-?\\d+", (CharSequence) balance_input)!=true)
+                        {
+                            System.out.println("veuillez entrer un nombre correct\n");
+                            balance_input = s.nextLine();
+                        }
+                    int balance = Integer.parseInt(balance_input);
+
+                    System.out.println("Entrez le découvert maximum du compte");
+                    String threshold_input = s.nextLine();
+                    int threshold = Integer.parseInt(threshold_input);
+
+                    while(Pattern.matches("\\-?\\d+", (CharSequence) threshold_input)!=true || threshold > 0)
+                    {
+                        System.out.println("veuillez entrer un nombre correct, négatif ou nul\n");
+                        threshold_input = s.nextLine();
+                        threshold = Integer.parseInt(threshold_input);
+                    }
+
+                    b.createNewAccount(name_input,balance,threshold);
+
+                    break;
+
+                case "2":
+                    System.out.println("Entrez le nom du compte a modifier");
+                     name_input = s.nextLine();
+
+                     System.out.println("Entrez le nouveau montant du solde de ce compte");
+                     balance_input = s.nextLine();
+                    while(Pattern.matches("\\-?\\d+", (CharSequence) balance_input)!=true)
+                    {
+                        System.out.println("veuillez entrer un nombre correct\n");
+                        balance_input = s.nextLine();
+                    }
+
+                    b.changeBalanceByName(name_input,Integer.parseInt(balance_input));
+
+
+                    break;
+
+                case "3":
+                    System.out.println("Entrez le nom du compte a bloquer");
+                    name_input = s.nextLine();
+                    b.blockAccount(name_input);
+
+                    break;
+
+
+
+
             }
         }
 
