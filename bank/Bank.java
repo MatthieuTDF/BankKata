@@ -8,19 +8,19 @@ public class Bank {
 
     /*
         Strings de connection à la base postgres
-     */
+
     private static final String JDBC_DRIVER = "org.postgresql.Driver";
     private static final String DB_URL = "jdbc:postgresql://localhost:5439/postgres";
     private static final String DB_USER = "postgres";
 
-    /*
+
         Strings de connection à la base mysql, à décommenter et compléter avec votre nom de bdd et de user
      */
-    // private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
-    // private static final String DB_URL = "jdbc:mysql://localhost:3306/bank_db";
-    // private static final String DB_USER = "bank_user";
+    private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/bank_db";
+    private static final String DB_USER = "root";
 
-    private static final String DB_PASS = "1234";
+    private static final String DB_PASS = "root";
 
     private static final String TABLE_NAME = "accounts";
 
@@ -68,7 +68,13 @@ public class Bank {
 
 
     public void createNewAccount(String name, int balance, int threshold) {
-        // TODO
+        String query = "INSERT INTO" + TABLE_NAME + "VALUES" + "('" + name + "','" + balance + "','" + threshold + "',1)";
+        try (PreparedStatement s = c.prepareStatement(query)) {
+            ResultSet r = s.executeQuery();
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public String printAllAccounts() {
@@ -78,19 +84,31 @@ public class Bank {
     }
 
     public void changeBalanceByName(String name, int balanceModifier) {
-        // TODO
+        String query2 = "UPDATE" + TABLE_NAME + "SET balance=" + balanceModifier + "WHERE name=" + "'" + name + "'";
+        try (PreparedStatement s = c.prepareStatement(query2)) {
+            ResultSet r = s.executeQuery();
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public void blockAccount(String name) {
-        // TODO
+            String query3 = "UPDATE" + TABLE_NAME + "SET status=" + 0 + "WHERE name=" + "'" + name + "'";
+            try (PreparedStatement s = c.prepareStatement(query3)) {
+                ResultSet r = s.executeQuery();
+
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
     }
 
     // For testing purpose
     String getTableDump() {
-        String query = "select * from " + TABLE_NAME;
+        String query4 = "select * from " + TABLE_NAME;
         String res = "";
 
-        try (PreparedStatement s = c.prepareStatement(query)) {
+        try (PreparedStatement s = c.prepareStatement(query4)) {
             ResultSet r = s.executeQuery();
 
             // Getting nb colmun from meta data
