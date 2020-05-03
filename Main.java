@@ -41,7 +41,36 @@ public class Main extends Application {
                     endOfSession = true;
                     b.closeDb();
                     break;
-                // TODO
+                case "0":
+                    System.out.println(b.printAllAccounts()) ;
+                    break ;
+                case "1":
+                    System.out.println("Saisissez le nom du compte") ;
+                    String nameInput = s.nextLine() ;
+
+                    System.out.println("Saisissez son solde") ;
+                    String balanceInput = s.nextLine() ;
+
+                    System.out.println("Saisissez son découvert") ;
+                    String thresholdInput = s.nextLine() ;
+
+
+                    b.createNewAccount(nameInput,Integer.parseInt(balanceInput),Integer.parseInt(thresholdInput));
+                    break;
+
+                 case "2":
+                     System.out.println("Saisissez le nom du compte") ;
+                     String changeBalanceNameInput = s.nextLine() ;
+
+                     System.out.println("Saisissez le nouveau solde du compte") ;
+                     String changebalanceInput = s.nextLine() ;
+
+                     b.changeBalanceByName(changeBalanceNameInput,Integer.parseInt(changebalanceInput));
+
+                case "3":
+                    System.out.println("Saisissez le nom du compte à bloquer") ;
+                    String blockNameInput = s.nextLine() ;
+                    b.blockAccount(blockNameInput);
             }
         }
 
