@@ -9,12 +9,13 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class BankTest {
-
     private static Bank b;
 
     @BeforeClass
     public static void init() {
+
         b = new Bank();
+
         b.dropAllTables();
     }
 
@@ -43,8 +44,8 @@ public class BankTest {
 
         // Check in DB
         assertEquals(
-                "[TESTY, 100, -100, f]" +
-                        "[TESTYTEST, 200, -300, f]",
+                "[TESTY, 100, -100, false]" +
+                        "[TESTYTEST, 200, -300, false]",
                 b.getTableDump());
     }
 
@@ -79,7 +80,7 @@ public class BankTest {
 
         // Check in DB
         assertEquals(
-                "[TESTY, 200, -100, f]",
+                "[TESTY, 200, -100, false]",
                 b.getTableDump());
     }
 
@@ -97,7 +98,7 @@ public class BankTest {
 
         // Check in DB
         assertEquals(
-                "[TESTY, 90, -100, f]",
+                "[TESTY, 90, -100, false]",
                 b.getTableDump());
     }
 
@@ -114,7 +115,7 @@ public class BankTest {
 
         // Check in DB
         assertEquals(
-                "[TESTY, 100, -100, t]",
+                "[TESTY, 100, -100, true]",
                 b.getTableDump());
     }
 
@@ -134,7 +135,7 @@ public class BankTest {
 
         // Check in DB
         assertEquals(
-                "[TESTY, 100, -100, t]",
+                "[TESTY, 100, -100, true]",
                 b.getTableDump());
     }
 
@@ -152,7 +153,7 @@ public class BankTest {
 
         // Check in DB
         assertEquals(
-                "[TESTY, 100, -100, f]",
+                "[TESTY, 100, -100, false]",
                 b.getTableDump());
     }
 
@@ -170,14 +171,16 @@ public class BankTest {
         // Check new balance
         assertEquals(
                 "TESTY | 90 | -100 | true\n" +
-                        "TESTO | 320 | -200 | false\n",
+                        "TESTO | 320 | -200 | false\n" +
+                        "TESTU | 150 | 15 | false\n",
                 b.printAllAccounts());
 
 
         // Check in DB
         assertEquals(
-                "[TESTY, 90, -100, t]" +
-                        "[TESTO, 320, -200, f]",
+                "[TESTY, 90, -100, true]" +
+                        "[TESTO, 320, -200, false]" +
+                        "[TESTU, 150, 15, false]",
                 b.getTableDump());
     }
 }
