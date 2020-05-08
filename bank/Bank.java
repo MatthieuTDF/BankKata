@@ -70,6 +70,7 @@ public class Bank {
         try (Statement s = this.c.createStatement()) {
             s.executeUpdate(
                     "DROP TABLE " + TABLE_NAME);
+            System.out.println("Table dropped");
         } catch (Exception e) {
             System.out.println(e.toString());
         }
