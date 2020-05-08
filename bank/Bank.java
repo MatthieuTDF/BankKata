@@ -2,6 +2,7 @@ package bank;
 
 
 import java.sql.*;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -74,22 +75,54 @@ public class Bank {
     }
 
     void dropAllTables() {
+        //Deletes the table accounts
         try (Statement s = c.createStatement()) {
             s.executeUpdate(
-                       "DROP SCHEMA public CASCADE;" +
-                            "CREATE SCHEMA public;" +
-                            "GRANT ALL ON SCHEMA public TO postgres;" +
-                            "GRANT ALL ON SCHEMA public TO public;");
+                       "DROP TABLE" + TABLE_NAME);
         } catch (Exception e) {
             System.out.println(e.toString());
         }
     }
 
+    private boolean checkNewAcount(String fullName){
+        Account account;
+        String q = "SELECT * FROM " + TABLE_NAME + " WHERE name='"+ fullName +"';";
+        try (PreparedStatement s = c.prepareStatement(q)){
+            ResultSet r = s.executeQuery();
+            if(r.next()){
+                return true;
+            }
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        return false;
+    }
 
-    public void createNewAccount(String name, int balance, int threshold) {
+
+    public void createNewAccount(String fullName, int amount, int roof) {
         // TODO
+        Pattern patterFullName = Pattern.compile("([a-zA-Z]*([ ]|-)?)*");
 
+        Matcher matcher = patterFullName.matcher(fullName);
+        if (!checkNewAcount(fullName)) {
+            if (matcher.matches()) {
+                if (roof <= 0) {
+                    try (Statement s = c.createStatement()) {
+                        s.executeUpdate(
+                                " INSERT INTO " + TABLE_NAME + "(name, amount, roof, isLocked) " +
+                                        "VALUES ('" + fullName + "', '" + amount + "', '" + roof + "', false)");
+                    } catch (Exception e) {
+                        System.out.println(e.toString());
 
+                    }
+                } else {
+                    System.out.println("The roof has to be superior to '0'.");
+                }
+
+            }
+            System.out.println("The name does not respect our policy");
+        }
+        System.out.println("The account already exists");
     }
 
     public String printAllAccounts() {
