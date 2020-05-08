@@ -41,7 +41,18 @@ public class Main extends Application {
                     endOfSession = true;
                     b.closeDb();
                     break;
-                // TODO
+                case "0":
+                    System.out.println(b.printAllAccounts());
+                    break;
+                case "1":
+                    b.promptNewAccount();
+                    break;
+                case "2":
+                    b.promptChangeBalance();
+                    break;
+                case "3":
+                    b.promptBlockAccount();
+                    break;
             }
         }
 
