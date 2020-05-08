@@ -51,7 +51,6 @@ class Account {
     }
 
     public String toString() {
-        // TODO
-        return "";
+        return this.getName() + " | " + this.getBalance() + " | " + this.getThreshold() + " | " + this.isBlocked() + "\n";
     }
 }
