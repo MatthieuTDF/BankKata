@@ -54,10 +54,16 @@ class Account {
         isBlocked = blocked;
     }
     //Getter setter fin
-    public void wireAmount(Integer wire){
+    public void wireAmount(Integer wire) {
         int total = amount + wire;
-        if (total <= roof){
-            this.amount = total;
+        if (isBlocked) {
+            if (total <= roof) {
+                this.amount = total;
+            } else{
+                System.out.println("The roof is reached !!");
+            }
+        }else{
+            System.out.println("The account is blocked !!");
         }
     }
 

@@ -2,17 +2,16 @@ package bank;
 
 
 import java.sql.*;
-import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Bank {
 
     private static final String TABLE_NAME = "accounts";
-    private static final String JDBC_DRIVER = "org.postgresql.Driver";
-    private static final String DB_URL = "jdbc:postgresql://localhost:5439/postgres";
-    private static final String DB_USER = "postgres";
-    private static final String DB_PASS = "1234";
+    private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
+    private static final String DB_URL = "jdbc:mysql://localhost:3308/bank_db";
+    private static final String DB_USER = "root";
+    private static final String DB_PASS = "";
 
     private Connection c;
 
@@ -55,11 +54,11 @@ public class Bank {
     private void createDataBase(){
         try (Statement s = c.createStatement()) {
             s.executeUpdate("CREATE TABLE " + TABLE_NAME + "(" +
-                    "name VARCHAR(120) NOT NULL," +
-                    "balance INT NOT NULL," +
-                    "threshold INT NOT NULL," +
-                    "locked BOOLEAN NOT NULL DEFAULT false, " +
-                    "PRIMARY KEY (name))");
+                    "fullName VARCHAR(120) NOT NULL," +
+                    "amount INT NOT NULL," +
+                    "roof INT NOT NULL," +
+                    "isLocked BOOLEAN NOT NULL DEFAULT false, " +
+                    "PRIMARY KEY (fullName))");
             System.out.println("Table 'accounts' created successfully");
         } catch (Exception e) {
             System.out.println(e.toString());
@@ -84,18 +83,18 @@ public class Bank {
         }
     }
 
-    private boolean checkNewAcount(String fullName){
+    private Account checkNewAcount(String fullName){
         Account account;
-        String q = "SELECT * FROM " + TABLE_NAME + " WHERE name='"+ fullName +"';";
+        String q = "SELECT * FROM " + TABLE_NAME + " WHERE fullName='"+ fullName +"';";
         try (PreparedStatement s = c.prepareStatement(q)){
             ResultSet r = s.executeQuery();
             if(r.next()){
-                return true;
+                return new Account(r.getString(1), r.getInt(2), r.getInt(3), r.getBoolean(4));
             }
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
-        return false;
+        return null;
     }
 
 
@@ -104,7 +103,7 @@ public class Bank {
         Pattern patterFullName = Pattern.compile("([a-zA-Z]*([ ]|-)?)*");
 
         Matcher matcher = patterFullName.matcher(fullName);
-        if (!checkNewAcount(fullName)) {
+        if (checkNewAcount(fullName) == null) {
             if (matcher.matches()) {
                 if (roof <= 0) {
                     try (Statement s = c.createStatement()) {
@@ -127,15 +126,45 @@ public class Bank {
 
     public String printAllAccounts() {
         // TODO
+        String q = "select * from " + TABLE_NAME;
+        StringBuilder total = new StringBuilder();
 
-        return "";
+        try (PreparedStatement s = c.prepareStatement(q)) {
+            ResultSet r = s.executeQuery();
+            while (r.next()){
+                total.append((new Account(r.getString(1), r.getInt(2), r.getInt(3), r.getBoolean(4))).toString());
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        return total.toString();
     }
 
-    public void changeBalanceByName(String name, int balanceModifier) {
+    public void changeBalanceByName(String fullName, int balanceModifier) {
         // TODO
+        Account account = checkNewAcount(fullName);
+        if (account != null) {
+            account.wireAmount(balanceModifier);
+            try (Statement s = c.createStatement()) {
+                s.executeUpdate(
+                        "UPDATE " + TABLE_NAME + "SET " +
+                                "amount =" + account.getAmount() + "WHERE fullName = '"+fullName+"'");
+            } catch (Exception e) {
+                System.out.println(e.toString());
+            }
+        }else{
+            System.out.println("This account does not exist");
+        }
     }
 
-    public void blockAccount(String name) {
+    public void blockAccount(String fullName) {
         // TODO
+        try (Statement s = c.createStatement()) {
+            s.executeUpdate("UPDATE " + TABLE_NAME + " SET " +
+                    " islocked = true WHERE fullName = '"+fullName+"'");
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
     }
 }
