@@ -35,14 +35,6 @@ public class Main extends Application {
             // Getting primary input
             userInput = s.nextLine();
 
-            // Processing user input
-            switch (userInput) {
-                case "q":
-                    endOfSession = true;
-                    b.closeDb();
-                    break;
-                // TODO
-            }
         }
 
     }
