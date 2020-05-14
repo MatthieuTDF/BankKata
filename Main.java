@@ -37,14 +37,33 @@ public class Main extends Application {
 
             // Processing user input
             switch (userInput) {
-                case "q":
+                case "q" -> {
                     endOfSession = true;
                     b.closeDb();
-                    break;
-                // TODO
+                }
+                case "0" -> System.out.println(b.printAllAccounts());
+                case "1" -> {
+                    System.out.println("Enter the Name  ");
+                    String name = s.nextLine();
+                    System.out.println("Enter the Balance ");
+                    int balance = s.nextInt();
+                    System.out.println("Enter the Threshold ");
+                    int threshold = s.nextInt();
+                    b.createNewAccount(name, balance, threshold);
+                }
+                case "2" -> {
+                    System.out.println("Enter the Name  ");
+                    String name2 = s.nextLine();
+                    System.out.println("Enter how much you want to add or remove ");
+                    int balance2 = s.nextInt();
+                    b.changeBalanceByName(name2, balance2);
+                }
+                case "3" -> {
+                    System.out.println("Enter the Name  ");
+                    b.blockAccount(s.nextLine());
+                }
             }
         }
 
     }
 }
-
