@@ -1,6 +1,7 @@
 import bank.Bank;
 
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class Main extends Application {
 
@@ -16,6 +17,11 @@ public class Main extends Application {
 
         // Init
         Bank b = new Bank();
+        String name;
+        String balanceTest;
+        String tresholdTest;
+        int balance;
+        int threshold;
 
         /// Declaration before loop
         boolean endOfSession = false;
@@ -41,7 +47,45 @@ public class Main extends Application {
                     endOfSession = true;
                     b.closeDb();
                     break;
-                // TODO
+                case "1":
+                    do { // On boucle tant que le nom est pas composé uniquement de lettres
+                        System.out.println("Nom : ");
+                        name = s.nextLine();
+                    }while(!Pattern.matches("[a-z A-Z]+",name));
+                    System.out.println("Seuil : ");
+                    threshold = Integer.parseInt(s.nextLine());
+                    try { // Si la balance a des lettres on ne créer pas le compte
+                        System.out.println("Balance : ");
+                        balance = Integer.parseInt(s.nextLine());
+                        b.createNewAccount(name,balance,threshold);
+                    }catch (Exception e) {
+
+                    }
+
+                    break;
+                case "0":
+                    b.printAllAccounts();
+                    break;
+                case  "2":
+                    do {
+                        System.out.println("Nom : ");
+                        name = s.nextLine();
+                    }while(!Pattern.matches("[a-z A-Z]+",name));
+                    try {
+                        System.out.println("Balance : ");
+                        balance = Integer.parseInt(s.nextLine());
+                        b.changeBalanceByName(name,balance);
+                    }catch (Exception e) {
+
+                    }
+                    break;
+                case "3":
+                    do {
+                        System.out.println("Nom : ");
+                        name = s.nextLine();
+                    }while(!Pattern.matches("[a-z A-Z]+",name));
+                    b.blockAccount(name);
+
             }
         }
 
