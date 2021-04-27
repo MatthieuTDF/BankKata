@@ -38,7 +38,20 @@ public class Bank {
             c = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
             System.out.println("Opened database successfully");
 
-            // TODO Init DB
+            // TODO Init DB (Création schéma base)
+
+            try (Statement s = c.createStatement()) {
+                s.executeUpdate(
+                        "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + "(\n" +
+                                "\tName VARCHAR(30) NOT NULL,\n" +
+                                "\tBalance INT DEFAULT NULL,\n" +
+                                "\tThreshold INT DEFAULT NULL,\n" +
+                                "\tBlocked BOOLEAN DEFAULT FALSE,\n" +
+                                "\tPRIMARY KEY (Name)\n" +
+                                ");");
+            } catch (Exception e) {
+                System.out.println(e.toString());
+            }
 
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
@@ -67,22 +80,108 @@ public class Bank {
     }
 
 
-    public void createNewAccount(String name, int balance, int threshold) {
-        // TODO
+    public void createNewAccount(String name_account, int balance_account, int threshold_account) {
+        if ((threshold_account <= 0) && (balance_account >= threshold_account)) {
+            try (Statement s = c.createStatement()) {
+                s.executeUpdate(
+                        "INSERT INTO accounts (name, balance, threshold) VALUES ('" + name_account + "', '" + balance_account + "', '" + threshold_account + "');"
+                );
+            } catch (Exception e) {
+                System.out.println(e.toString());
+            }
+        }
     }
 
     public String printAllAccounts() {
-        // TODO
+        String query = "select name, balance, threshold, blocked from " + TABLE_NAME;
+        String res = "";
 
-        return "";
+        try (PreparedStatement s = c.prepareStatement(query)) {
+            ResultSet r = s.executeQuery();
+
+            // while there is a next row
+            while (r.next()){
+                res += r.getString("name");
+                res += " | ";
+                res += r.getString("balance");
+                res += " | ";
+                res += r.getString("threshold");
+                res += " | ";
+                res += r.getBoolean("blocked");
+                res += "\n";
+            }
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        return res;
     }
 
-    public void changeBalanceByName(String name, int balanceModifier) {
-        // TODO
+    public void changeBalanceByName(String name_account, int balanceModifier) {
+        String query = "SELECT blocked FROM accounts WHERE name = ?;";
+        boolean blocked = false;
+
+        try (PreparedStatement s = c.prepareStatement(query)) {
+            s.setString(1, name_account);
+            ResultSet r = s.executeQuery();
+            r.next();
+            blocked = r.getBoolean(1);
+            System.out.println(blocked);
+
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+
+        if (!blocked){
+            String query1 = "SELECT balance FROM accounts WHERE name = ?;";
+            Integer bal = 0;
+
+            try (PreparedStatement s = c.prepareStatement(query1)) {
+                s.setInt(1, balanceModifier);
+                ResultSet r = s.executeQuery();
+                r.next();
+                bal = r.getInt(1);
+                System.out.println(bal);
+
+            } catch (Exception e) {
+                System.out.println(e.toString());
+            }
+
+            String query2 = "SELECT threshold FROM accounts WHERE name = ?;";
+            Integer threshold = 0;
+
+            try (PreparedStatement s = c.prepareStatement(query2)) {
+                s.setInt(1, threshold);
+                ResultSet r = s.executeQuery();
+                r.next();
+                threshold = r.getInt(1);
+                System.out.println(threshold);
+
+            } catch (Exception e) {
+                System.out.println(e.toString());
+            }
+
+            if (bal + balanceModifier > threshold){
+                try (Statement s = c.createStatement()) {
+                    s.executeUpdate(
+                            "UPDATE accounts SET balance = balance + '" + balanceModifier + "' WHERE name = '" + name_account + "';"
+                    );
+                } catch (Exception e) {
+                    System.out.println(e.toString());
+                }
+            }
+        }
     }
 
-    public void blockAccount(String name) {
-        // TODO
+    public void blockAccount(String name_account) {
+        try (Statement s = c.createStatement()) {
+            s.executeUpdate(
+                    "UPDATE accounts SET blocked = TRUE WHERE name = '" + name_account + "';"
+            );
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
     }
 
     // For testing purpose
