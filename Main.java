@@ -20,10 +20,15 @@ public class Main extends Application {
         /// Declaration before loop
         boolean endOfSession = false;
         String userInput;
+        String name;
+        int balance;
+        int threshold;
+        int amount;
 
         // Loop
         while (!endOfSession) {
 
+            flushScreen();
             // Menu display
             System.out.println("\n\nWhat operation do you want to do ?");
             System.out.println("0. See all accounts");
@@ -41,7 +46,43 @@ public class Main extends Application {
                     endOfSession = true;
                     b.closeDb();
                     break;
-                // TODO
+
+                case "0":
+                    System.out.println(b.printAllAccounts());
+                    break;
+
+                case "1":
+                    System.out.println("\nEnter a name");
+                    name = s.nextLine();
+                    try{
+                        System.out.println("\nEnter a balance");
+                        balance = Integer.parseInt(s.nextLine());
+                        System.out.println("\nEnter a threshold");
+                        threshold = Integer.parseInt(s.nextLine());
+                        b.createNewAccount(name, balance, threshold);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Input is not a number!");
+                    }
+
+                    break;
+
+                case "2":
+                    System.out.println("\nEnter a name");
+                    name = s.nextLine();
+                    try {
+                        System.out.println("\nEnter an amount");
+                        amount = Integer.parseInt(s.nextLine());
+                        b.changeBalanceByName(name, amount);
+                    } catch (NumberFormatException e) {
+                       System.out.println("Input is not a number!");
+                    }
+                    break;
+
+                case "3":
+                    System.out.println("\nEnter a name");
+                    name = s.nextLine();
+                    b.blockAccount(name);
+                    break;
             }
         }
 
